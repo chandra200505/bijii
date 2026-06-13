@@ -1,0 +1,331 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  .wrap{min-height:500px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#3a0d3a 0%,#4a0e3d 50%,#2b0a2e 100%);padding:20px;font-family:'Nunito',sans-serif;position:relative;overflow:hidden}
+  .wrap::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(255,107,180,0.18) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,182,217,0.15) 0%,transparent 50%);pointer-events:none}
+  .star{position:absolute;width:4px;height:4px;background:#ffd6ec;border-radius:50%;animation:twinkle 3s infinite}
+  @keyframes twinkle{0%,100%{opacity:0.2}50%{opacity:1}}
+  .card{background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);border:1.5px solid rgba(255,182,217,0.25);border-radius:24px;padding:28px 24px;max-width:340px;width:100%;position:relative;text-align:center}
+  .screen{display:none}
+  .screen.active{display:block}
+
+  /* Screen 0 - envelope */
+  .envelope-wrap{cursor:pointer;user-select:none}
+  .badge{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.55);text-transform:uppercase;margin-bottom:8px}
+  .ribbon{background:linear-gradient(90deg,#ff6bb4,#ff9ed4);border-radius:20px;padding:6px 20px;display:inline-block;color:#fff;font-size:13px;font-weight:700;margin-bottom:16px}
+  .envelope-icon{font-size:72px;display:block;margin:12px auto;animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .tap-hint{color:rgba(255,255,255,0.5);font-size:13px;margin-top:12px;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+
+  /* Screen 1 - question */
+  .avatar-frame{width:100px;height:100px;border-radius:16px;background:linear-gradient(135deg,#ff6bb4,#ff9ed4);padding:3px;margin:0 auto 16px}
+  .avatar-inner{width:100%;height:100%;border-radius:14px;background:#3a0d3a;display:flex;align-items:center;justify-content:center;font-size:48px}
+  .main-q{font-family:'Fredoka One',sans-serif;font-size:26px;color:#fff;line-height:1.2;margin:12px 0 20px}
+  .btn-yes{background:linear-gradient(90deg,#ff6bb4,#ff9ed4);color:#fff;border:none;border-radius:50px;padding:14px 32px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;width:100%;margin-bottom:10px;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 20px rgba(255,107,180,0.4)}
+  .btn-yes:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,107,180,0.6)}
+  .btn-no{background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:50px;padding:10px 24px;font-family:'Nunito',sans-serif;font-size:14px;cursor:pointer;width:100%;transition:all 0.2s}
+  .btn-no:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
+
+  /* Screen 2 - game mode */
+  .section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:8px}
+  .section-title{font-family:'Fredoka One',sans-serif;font-size:24px;color:#fff;margin-bottom:20px}
+  .options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+  .opt-card{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,182,217,0.18);border-radius:14px;padding:12px 8px;cursor:pointer;transition:all 0.2s;color:#fff}
+  .opt-card:hover,.opt-card.selected{background:rgba(255,107,180,0.3);border-color:#ff6bb4;box-shadow:0 0 16px rgba(255,107,180,0.35)}
+  .opt-icon{font-size:28px;display:block;margin-bottom:4px}
+  .opt-label{font-size:12px;font-weight:700;color:rgba(255,255,255,0.9)}
+  .btn-lanjut{background:linear-gradient(90deg,#ff6bb4,#ff9ed4);color:#fff;border:none;border-radius:50px;padding:13px 32px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;width:100%;transition:all 0.2s;box-shadow:0 4px 20px rgba(255,107,180,0.4)}
+  .btn-lanjut:disabled{opacity:0.4;cursor:not-allowed}
+  .btn-lanjut:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,107,180,0.6)}
+
+  /* Screen 3 - waktu & pesan */
+  .time-input,.msg-input{background:rgba(255,255,255,0.09);border:1.5px solid rgba(255,182,217,0.25);border-radius:12px;padding:12px 16px;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;width:100%;margin-bottom:12px;outline:none}
+  .msg-input{resize:vertical;min-height:70px;font-family:'Nunito',sans-serif}
+  .time-input::placeholder,.msg-input::placeholder{color:rgba(255,255,255,0.35)}
+  .time-input:focus,.msg-input:focus{border-color:#ff6bb4;background:rgba(255,107,180,0.15)}
+  .time-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+  .chip{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,182,217,0.2);border-radius:20px;padding:6px 14px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s}
+  .chip:hover,.chip.active{background:rgba(255,107,180,0.3);border-color:#ff9ed4;color:#fff}
+
+  /* Screen 4 - ticket */
+  .ticket{background:linear-gradient(135deg,rgba(255,107,180,0.28),rgba(255,158,212,0.28));border:1.5px solid rgba(255,182,217,0.3);border-radius:20px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden}
+  .ticket::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.06)}
+  .ticket-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .ticket-title{font-family:'Fredoka One',sans-serif;font-size:20px;color:#fff}
+  .ticket-icon{font-size:28px}
+  .ticket-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;text-align:left}
+  .ticket-row-icon{font-size:18px;margin-top:1px}
+  .ticket-row-label{font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.45);text-transform:uppercase}
+  .ticket-row-value{font-size:14px;font-weight:700;color:#fff;word-break:break-word}
+  .ticket-divider{border:none;border-top:1px dashed rgba(255,255,255,0.25);margin:14px 0}
+  .ticket-from{font-size:13px;color:rgba(255,255,255,0.55);text-align:center}
+  .ticket-from span{color:#ffb6e1;font-weight:700}
+  .btn-share{background:linear-gradient(90deg,#ff6bb4,#ff9ed4);color:#fff;border:none;border-radius:50px;padding:13px 24px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;width:100%;margin-bottom:10px;box-shadow:0 4px 20px rgba(255,107,180,0.4)}
+  .btn-wa{background:#25D366;color:#fff;border:none;border-radius:50px;padding:13px 24px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;width:100%;margin-bottom:10px;box-shadow:0 4px 20px rgba(37,211,102,0.4);display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-wa:hover{transform:translateY(-2px)}
+  .progress{display:flex;gap:6px;justify-content:center;margin-top:20px}
+  .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.3s}
+  .dot.active{background:#ff6bb4;width:24px;border-radius:4px}
+
+  /* nope screen */
+  .nope-txt{font-family:'Fredoka One',sans-serif;font-size:28px;color:#ff8fb0;margin:16px 0 8px}
+  .nope-sub{color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:16px}
+</style>
+
+<div class="wrap" id="mainWrap">
+  <div style="position:absolute;inset:0;pointer-events:none" id="stars"></div>
+
+  <div class="card">
+    <div class="progress" id="progress">
+      <div class="dot active" id="d0"></div>
+      <div class="dot" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+    </div>
+
+    <!-- S0: Envelope -->
+    <div class="screen active" id="s0">
+      <div class="envelope-wrap" onclick="openEnvelope()">
+        <div class="badge">Undangan Pribadi</div>
+        <div class="ribbon">buat kamu 🎮💗</div>
+        <span class="envelope-icon">💌</span>
+        <p style="color:rgba(255,255,255,0.75);font-size:15px;font-weight:600;margin-top:8px">Ada sesuatu buat de ubyy!</p>
+        <p class="tap-hint">Tap amplop buat buka ✨</p>
+      </div>
+    </div>
+
+    <!-- S1: Question -->
+    <div class="screen" id="s1">
+      <div class="avatar-frame"><div class="avatar-inner">🎮</div></div>
+      <p style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase">Buat kamu</p>
+      <p class="main-q">Mau main<br>Roblox sama<br>aku gak? 🕹️💕</p>
+      <button class="btn-yes" onclick="goTo(2)">Mau banget! 🎉</button>
+      <button class="btn-no" id="noBtn" onclick="sayNo()">ga ah</button>
+    </div>
+
+    <!-- S1b: Nope -->
+    <div class="screen" id="s1b">
+      <span style="font-size:60px;display:block;margin:16px 0">🥺</span>
+      <p class="nope-txt">Yakin nih?</p>
+      <p class="nope-sub">Masa iya nolak ajakan main bareng...</p>
+      <button class="btn-yes" onclick="goTo(2)" style="margin-bottom:10px">Oke deh, mau deh! 🥹</button>
+      <button class="btn-no" onclick="hardNo()">beneran ga mau</button>
+    </div>
+
+    <!-- S1c: Hard No -->
+    <div class="screen" id="s1c">
+      <span style="font-size:60px;display:block;margin:16px 0">💔</span>
+      <p class="nope-txt">Oke deh...</p>
+      <p class="nope-sub">Tapi kalau berubah pikiran, aku bakal tunggu di server ya!</p>
+      <button class="btn-yes" onclick="goTo(2)">Eh, jadi mau deh 😅</button>
+    </div>
+
+    <!-- S2: Game Mode -->
+    <div class="screen" id="s2">
+      <p class="section-label">pilih game-nya</p>
+      <p class="section-title">Mau main apa kita? 🏆</p>
+      <div class="options-grid" id="gameOpts">
+        <div class="opt-card" onclick="selectOpt(this)"><span class="opt-icon">⛰️</span><span class="opt-label">Main Gunung</span></div>
+        <div class="opt-card" onclick="selectOpt(this)"><span class="opt-icon">👻</span><span class="opt-label">Horror</span></div>
+        <div class="opt-card" onclick="selectOpt(this)"><span class="opt-icon">🐾</span><span class="opt-label">Pet Simulator</span></div>
+        <div class="opt-card" onclick="selectOpt(this)"><span class="opt-icon">🎯</span><span class="opt-label">Terserah kamu</span></div>
+      </div>
+      <button class="btn-lanjut" id="btnG" onclick="goTo(3)" disabled>Lanjut →</button>
+    </div>
+
+    <!-- S3: Waktu & Pesan -->
+    <div class="screen" id="s3">
+      <p class="section-label">buat <span id="nameTxt">kamu</span></p>
+      <p class="section-title">Kapan kamu<br>free? ⏰</p>
+      <input class="time-input" type="date" id="dateInput" oninput="checkTime()">
+      <div class="time-chips">
+        <div class="chip" onclick="selectChip(this,'Pagi')">Pagi ☀️</div>
+        <div class="chip" onclick="selectChip(this,'Siang')">Siang 🌤️</div>
+        <div class="chip" onclick="selectChip(this,'Sore')">Sore 🌅</div>
+        <div class="chip" onclick="selectChip(this,'Malam')">Malam 🌙</div>
+      </div>
+      <textarea class="msg-input" id="msgInput" placeholder="Tulis pesan buat dia... (misal: jangan AFK ya!)" oninput="checkTime()"></textarea>
+      <button class="btn-lanjut" id="btnT" onclick="goTo(4)" disabled>Lihat Tiketnya! 🎟️</button>
+    </div>
+
+    <!-- S4: Ticket -->
+    <div class="screen" id="s4">
+      <div class="ticket">
+        <div class="ticket-header">
+          <div class="ticket-title">🎟️ Tiket Roblox</div>
+          <div class="ticket-icon">💗</div>
+        </div>
+        <div class="ticket-row">
+          <div class="ticket-row-icon">👤</div>
+          <div class="ticket-row-content">
+            <div class="ticket-row-label">Untuk</div>
+            <div class="ticket-row-value" id="ticketFor">de ubby</div>
+          </div>
+        </div>
+        <div class="ticket-row">
+          <div class="ticket-row-icon">📅</div>
+          <div class="ticket-row-content">
+            <div class="ticket-row-label">Kapan</div>
+            <div class="ticket-row-value" id="ticketDate">—</div>
+          </div>
+        </div>
+        <div class="ticket-row">
+          <div class="ticket-row-icon">🎯</div>
+          <div class="ticket-row-content">
+            <div class="ticket-row-label">Game</div>
+            <div class="ticket-row-value" id="ticketGame">—</div>
+          </div>
+        </div>
+        <div class="ticket-row">
+          <div class="ticket-row-icon">📋</div>
+          <div class="ticket-row-content">
+            <div class="ticket-row-label">Pesan</div>
+            <div class="ticket-row-value" id="ticketMsg">—</div>
+          </div>
+        </div>
+        <hr class="ticket-divider">
+        <div class="ticket-from">dari <span>aku</span>, buat de ubby 💗</div>
+      </div>
+      <button class="btn-wa" onclick="shareWhatsapp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.149-.15.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.05-.52-.099-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.668-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487 2.981 1.287 2.981.858 3.604.805.624-.05 2.03-.828 2.327-1.629.297-.8.297-1.486.198-1.629-.099-.143-.297-.234-.595-.382z"/><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.866.5 3.617 1.385 5.137L2 22l5.06-1.488A9.86 9.86 0 0 0 12.04 21.82c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 17.91c-1.79 0-3.45-.52-4.86-1.42l-.35-.21-3.01.89.9-2.93-.23-.36a7.93 7.93 0 0 1-1.34-4.45c0-4.39 3.57-7.96 7.95-7.96 4.39 0 7.96 3.57 7.96 7.96 0 4.39-3.57 7.96-7.96 7.96z"/></svg>
+        Bagikan ke WhatsApp
+      </button>
+      <button class="btn-share" onclick="shareTicket()">Bagikan Tiket 🎮</button>
+      <button class="btn-no" onclick="restart()" style="width:100%;padding:8px;border-radius:50px;background:transparent;color:rgba(255,255,255,0.35);border:none;cursor:pointer;font-family:Nunito,sans-serif;font-size:13px">Ulang dari awal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedGame = '';
+let selectedTime = '';
+
+function makeStars(){
+  const c = document.getElementById('stars');
+  for(let i=0;i<30;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    s.style.left=Math.random()*100+'%';
+    s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=Math.random()*3+'s';
+    s.style.animationDuration=(2+Math.random()*3)+'s';
+    s.style.opacity=Math.random();
+    c.appendChild(s);
+  }
+}
+makeStars();
+
+function openEnvelope(){
+  const env = document.querySelector('.envelope-icon');
+  env.style.transform='scale(1.3)';
+  env.textContent='💖';
+  setTimeout(()=>goTo(1),400);
+}
+
+let noBtnMoves = 0;
+function sayNo(){
+  noBtnMoves++;
+  if(noBtnMoves < 3){
+    const btn = document.getElementById('noBtn');
+    const card = document.querySelector('.card');
+    const maxX = card.offsetWidth - btn.offsetWidth - 20;
+    const x = Math.floor(Math.random()*maxX);
+    btn.style.marginLeft = x+'px';
+    btn.style.marginRight = 'auto';
+    btn.style.width = 'auto';
+    btn.style.display = 'block';
+    btn.textContent = noBtnMoves===1?'ga mau beneran':'yakin nih? 😢';
+  } else {
+    goTo('1b');
+  }
+}
+
+function hardNo(){
+  goTo('1c');
+}
+
+function goTo(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  if(n===4) fillTicket();
+  updateDots(n);
+}
+
+function updateDots(n){
+  const map={0:0,1:1,'1b':1,'1c':1,2:2,3:3,4:4};
+  const idx = map[n] || 0;
+  for(let i=0;i<4;i++){
+    const d = document.getElementById('d'+i);
+    if(d) d.className='dot'+(i===idx?' active':'');
+  }
+}
+
+function selectOpt(el){
+  document.querySelectorAll('#gameOpts .opt-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedGame = el.querySelector('.opt-label').textContent;
+  document.getElementById('btnG').disabled = false;
+}
+
+function selectChip(el, val){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  selectedTime = val;
+  checkTime();
+}
+
+function checkTime(){
+  const d = document.getElementById('dateInput').value;
+  const msg = document.getElementById('msgInput').value.trim();
+  document.getElementById('btnT').disabled = !(d && selectedTime && msg);
+}
+
+function fillTicket(){
+  const d = document.getElementById('dateInput').value;
+  let dateStr = '—';
+  if(d){
+    const dt = new Date(d+'T12:00:00');
+    dateStr = dt.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  }
+  document.getElementById('ticketDate').textContent = dateStr + (selectedTime?' · '+selectedTime:'');
+  document.getElementById('ticketGame').textContent = selectedGame || '—';
+  document.getElementById('ticketMsg').textContent = document.getElementById('msgInput').value.trim() || '—';
+}
+
+function buildShareText(){
+  const date = document.getElementById('ticketDate').textContent;
+  const game = document.getElementById('ticketGame').textContent;
+  const msg = document.getElementById('ticketMsg').textContent;
+  return `🎟️ Tiket Main Roblox! 💗\n\n📅 Kapan: ${date}\n🎯 Game: ${game}\n📋 Pesan: ${msg}\n\ndari aku, buat kamu 💗`;
+}
+
+function shareTicket(){
+  const text = buildShareText();
+  if(navigator.share){
+    navigator.share({title:'Tiket Main Roblox!',text}).catch(()=>{});
+  } else {
+    alert('Screenshoot tiketnya ya dan kirim ke temenmu! 📸');
+  }
+}
+
+function shareWhatsapp(){
+  const text = buildShareText();
+  const url = 'https://wa.me/?text='+encodeURIComponent(text);
+  window.open(url,'_blank');
+}
+
+function restart(){
+  selectedGame='';selectedTime='';
+  document.getElementById('noBtn').style.cssText='';
+  noBtnMoves=0;
+  document.querySelectorAll('.opt-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById('dateInput').value='';
+  document.getElementById('msgInput').value='';
+  document.getElementById('btnG').disabled=true;
+  document.getElementById('btnT').disabled=true;
+  goTo(0);
+}
+</script>
